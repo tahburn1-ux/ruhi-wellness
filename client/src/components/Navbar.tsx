@@ -9,7 +9,7 @@ const navLinks = [
   { href: "/services", label: "Our Drips" },
   { href: "/#process", label: "About Us" },
   { href: "/contact#reviews", label: "Reviews" },
-  { href: "/contact", label: "Contact" },
+  { href: "/contact", label: "FAQ" },
 ];
 
 export default function Navbar() {
@@ -32,18 +32,12 @@ export default function Navbar() {
 
         {/* Brand mark */}
         <Link href="/">
-          <div className="flex items-center gap-2.5 cursor-pointer group">
-            <svg width="30" height="34" viewBox="0 0 30 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15,1 C15,1 8,8 8,15 C8,22 15,33 15,33 C15,33 22,22 22,15 C22,8 15,1 15,1 Z"
-                fill="none" stroke="oklch(0.52 0.10 75)" strokeWidth="1.6" />
-              <path d="M10,13 C10,13 12,9 15,9 C18,9 20,13 20,13 C20,13 18,17 15,17 C12,17 10,13 10,13 Z"
-                fill="none" stroke="oklch(0.52 0.10 75)" strokeWidth="1.4" />
-              <circle cx="15" cy="13" r="2.2" fill="oklch(0.52 0.10 75)" opacity="0.75" />
-            </svg>
-            <div className="leading-none">
-              <div className="font-serif text-[17px] font-bold text-[oklch(0.28_0.05_60)] tracking-wider">RUHI</div>
-              <div className="text-[8px] font-semibold text-[oklch(0.52_0.10_75)] uppercase tracking-[0.22em]">WELLNESS</div>
-            </div>
+          <div className="flex items-center gap-2 cursor-pointer group">
+            <img
+              src="/manus-storage/ruhi-logo-transparent_870013bb.png"
+              alt="Ruhi Wellness"
+              className="h-10 w-auto object-contain"
+            />
           </div>
         </Link>
 

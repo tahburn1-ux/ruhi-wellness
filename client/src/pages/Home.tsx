@@ -4,7 +4,6 @@ import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import IVDripBag from "@/components/IVDripBag";
-import { WaterSplashOverlay, useWaterSplash } from "@/components/WaterSplash";
 import { ArrowRight, Star, ChevronRight, Zap, Shield, Clock, Award, MapPin, Heart, Sparkles, Search, Calendar, ClipboardList, Droplets, Activity, Brain, RefreshCw, Dumbbell } from "lucide-react";
 
 // ── Service Icon mapper ─────────────────────────────────────────────────────
@@ -100,6 +99,277 @@ function Counter({ target, suffix = "" }: { target: number; suffix?: string }) {
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
+// ── Botanical background SVG ──────────────────────────────────────────────────
+function BotanicalBackground() {
+  return (
+    <svg
+      className="absolute inset-0 w-full h-full pointer-events-none"
+      viewBox="0 0 1440 900"
+      preserveAspectRatio="xMidYMid slice"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      {/* Large warm blob top-right */}
+      <ellipse cx="1100" cy="200" rx="480" ry="420" fill="oklch(0.88 0.04 78)" opacity="0.45" />
+      {/* Medium blob bottom-right */}
+      <ellipse cx="1300" cy="750" rx="320" ry="260" fill="oklch(0.84 0.05 75)" opacity="0.30" />
+      {/* Small blob bottom-left */}
+      <ellipse cx="120" cy="820" rx="220" ry="160" fill="oklch(0.86 0.04 76)" opacity="0.22" />
+
+      {/* ── Main botanical stem + leaves (centre-right, large) ── */}
+      <g stroke="oklch(0.55 0.10 72)" strokeWidth="1.4" fill="none" opacity="0.55">
+        {/* Main stem */}
+        <path d="M820,900 C820,900 830,700 810,550 C795,420 840,300 860,180" strokeWidth="2" />
+
+        {/* Leaf pair 1 — large, near bottom */}
+        <path d="M820,760 C780,700 720,660 680,620 C720,640 780,700 820,760 Z" />
+        <path d="M820,760 C820,760 810,690 790,660" />
+        <path d="M820,760 C820,760 770,710 740,685" />
+        <path d="M820,760 C820,760 730,650 700,630" />
+
+        {/* Leaf pair 1 right */}
+        <path d="M820,760 C860,700 920,660 960,620 C920,640 860,700 820,760 Z" />
+        <path d="M820,760 C820,760 830,690 850,660" />
+        <path d="M820,760 C820,760 870,710 900,685" />
+        <path d="M820,760 C820,760 930,650 960,630" />
+
+        {/* Leaf pair 2 — mid */}
+        <path d="M815,580 C770,520 710,490 665,455 C710,475 770,520 815,580 Z" />
+        <path d="M815,580 C815,580 800,510 778,480" />
+        <path d="M815,580 C815,580 755,525 725,500" />
+        <path d="M815,580 C815,580 680,465 660,455" />
+
+        {/* Leaf pair 2 right */}
+        <path d="M815,580 C860,520 920,490 965,455 C920,475 860,520 815,580 Z" />
+        <path d="M815,580 C815,580 830,510 852,480" />
+        <path d="M815,580 C815,580 875,525 905,500" />
+        <path d="M815,580 C815,580 950,465 970,455" />
+
+        {/* Leaf pair 3 — upper */}
+        <path d="M830,390 C790,330 740,305 700,275 C740,295 790,330 830,390 Z" />
+        <path d="M830,390 C830,390 815,320 795,295" />
+        <path d="M830,390 C830,390 765,335 740,312" />
+
+        {/* Leaf pair 3 right */}
+        <path d="M830,390 C870,330 920,305 960,275 C920,295 870,330 830,390 Z" />
+        <path d="M830,390 C830,390 845,320 865,295" />
+        <path d="M830,390 C830,390 895,335 920,312" />
+
+        {/* Small top sprigs */}
+        <path d="M855,220 C835,185 820,160 830,130 C840,160 850,185 855,220 Z" />
+        <path d="M855,220 C875,185 890,160 880,130 C870,160 860,185 855,220 Z" />
+      </g>
+
+      {/* Scattered gold dots */}
+      <g fill="oklch(0.58 0.10 74)" opacity="0.35">
+        <circle cx="1050" cy="140" r="3" />
+        <circle cx="1080" cy="165" r="2" />
+        <circle cx="1030" cy="175" r="1.5" />
+        <circle cx="1100" cy="120" r="2.5" />
+        <circle cx="1130" cy="155" r="1.5" />
+        <circle cx="1350" cy="480" r="3" />
+        <circle cx="1370" cy="510" r="2" />
+        <circle cx="1340" cy="530" r="1.5" />
+        <circle cx="680" cy="800" r="2" />
+        <circle cx="660" cy="820" r="1.5" />
+      </g>
+    </svg>
+  );
+}
+
+// ── Video Hero ──────────────────────────────────────────────────────────────
+function VideoHero({ heroTitle, heroSubtitle, renderHeroTitle }: {
+  heroTitle: string;
+  heroSubtitle: string;
+  renderHeroTitle: (raw: string) => React.ReactNode;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const fadingOutRef = useRef(false);
+  const animFrameRef = useRef<number | null>(null);
+
+  const cancelAnim = () => {
+    if (animFrameRef.current !== null) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = null;
+    }
+  };
+
+  const fadeIn = (video: HTMLVideoElement) => {
+    cancelAnim();
+    fadingOutRef.current = false;
+    const start = video.style.opacity ? parseFloat(video.style.opacity) : 0;
+    const startTime = performance.now();
+    const duration = 500;
+    const step = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      video.style.opacity = String(start + (1 - start) * progress);
+      if (progress < 1) animFrameRef.current = requestAnimationFrame(step);
+    };
+    animFrameRef.current = requestAnimationFrame(step);
+  };
+
+  const fadeOut = (video: HTMLVideoElement) => {
+    if (fadingOutRef.current) return;
+    fadingOutRef.current = true;
+    cancelAnim();
+    const start = parseFloat(video.style.opacity || "1");
+    const startTime = performance.now();
+    const duration = 500;
+    const step = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      video.style.opacity = String(start * (1 - progress));
+      if (progress < 1) animFrameRef.current = requestAnimationFrame(step);
+    };
+    animFrameRef.current = requestAnimationFrame(step);
+  };
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.style.opacity = "0";
+
+    const handleTimeUpdate = () => {
+      if (!fadingOutRef.current && video.duration - video.currentTime <= 0.55) {
+        fadeOut(video);
+      }
+    };
+    const handleEnded = () => {
+      video.style.opacity = "0";
+      fadingOutRef.current = false;
+      setTimeout(() => {
+        video.currentTime = 0;
+        video.play().then(() => fadeIn(video)).catch(() => {});
+      }, 100);
+    };
+    const handleCanPlay = () => fadeIn(video);
+
+    video.addEventListener("timeupdate", handleTimeUpdate);
+    video.addEventListener("ended", handleEnded);
+    video.addEventListener("canplay", handleCanPlay);
+    video.play().catch(() => {});
+
+    return () => {
+      cancelAnim();
+      video.removeEventListener("timeupdate", handleTimeUpdate);
+      video.removeEventListener("ended", handleEnded);
+      video.removeEventListener("canplay", handleCanPlay);
+    };
+  }, []);
+
+  return (
+    <section className="relative min-h-screen flex flex-col overflow-hidden bg-black">
+      {/* Full-screen video */}
+      <video
+        ref={videoRef}
+        muted
+        playsInline
+        loop={false}
+        className="absolute inset-0 w-full h-full object-cover translate-y-[17%]"
+        style={{ opacity: 0 }}
+      >
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4.mp4" type="video/mp4" />
+      </video>
+
+      {/* Warm cream-gold overlay — keeps Ruhi palette visible over video */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.12_0.04_60/0.55)] via-[oklch(0.10_0.03_65/0.35)] to-[oklch(0.08_0.02_70/0.20)] pointer-events-none" />
+      {/* Bottom fade so content below hero blends smoothly */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[oklch(0.975_0.012_80)] to-transparent pointer-events-none" />
+
+      {/* Botanical SVG overlay — gold line art on top of video */}
+      <div className="absolute inset-0 pointer-events-none opacity-30">
+        <BotanicalBackground />
+      </div>
+
+      {/* Hero content — left-aligned, matching reference layout */}
+      <div className="relative z-10 flex-1 flex items-center pt-20">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-0 items-center">
+
+            {/* Left: text column */}
+            <div className="max-w-[640px]">
+              {/* Liquid glass badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full liquid-glass-gold text-xs font-semibold text-[oklch(0.88_0.08_78)] uppercase tracking-widest mb-8">
+                <span className="w-1.5 h-1.5 rounded-full bg-[oklch(0.78_0.10_78)] animate-pulse" />
+                Mobile IV Therapy — We Come To You
+              </div>
+
+              {/* Headline */}
+              <h1
+                className="text-[3.6rem] lg:text-[4.8rem] xl:text-[5.6rem] font-bold leading-[1.05] text-white mb-6"
+                style={{ fontFamily: "'Cormorant Garamond', serif" }}
+              >
+                {renderHeroTitle(heroTitle)}
+              </h1>
+
+              {/* Botanical divider */}
+              <div className="divider-line mb-6" style={{ color: "oklch(0.78 0.10 78)" }}>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path d="M10,2 C10,2 6,6 6,10 C6,14 10,18 10,18 C10,18 14,14 14,10 C14,6 10,2 10,2 Z" stroke="currentColor" strokeWidth="1.2" fill="none"/>
+                  <circle cx="10" cy="10" r="2" fill="currentColor" opacity="0.5"/>
+                </svg>
+              </div>
+
+              {/* Subtitle */}
+              <p className="text-base lg:text-[1.05rem] text-white/80 leading-relaxed mb-10 max-w-[480px]">
+                {heroSubtitle}
+              </p>
+
+              {/* Liquid glass CTAs */}
+              <div className="flex flex-wrap gap-4 mb-14">
+                <Link href="/booking">
+                  <button className="flex items-center gap-2 px-8 py-3.5 rounded-full font-semibold text-sm uppercase tracking-widest transition-all"
+                    style={{ background: "oklch(0.52 0.10 75)", color: "oklch(0.975 0.012 80)" }}
+                    onMouseEnter={e => (e.currentTarget.style.background = "oklch(0.45 0.10 75)")}
+                    onMouseLeave={e => (e.currentTarget.style.background = "oklch(0.52 0.10 75)")}>
+                    Book Now <ArrowRight className="w-4 h-4" />
+                  </button>
+                </Link>
+                <Link href="/services">
+                  <button className="liquid-glass-gold flex items-center gap-2 px-8 py-3.5 rounded-full font-semibold text-sm uppercase tracking-widest text-white hover:bg-white/5 transition-colors">
+                    View Our Drips
+                  </button>
+                </Link>
+              </div>
+
+              {/* 4 feature icons — liquid glass cards */}
+              <div className="flex items-start gap-0">
+                {[
+                  { icon: Zap, label: "Boost Energy", sub: "Fight fatigue &\nfeel revitalised" },
+                  { icon: Shield, label: "Support Immunity", sub: "Strengthen your\nbody's defenses" },
+                  { icon: Sparkles, label: "Enhance Wellness", sub: "Hydrate, restore &\nfeel your best" },
+                  { icon: Heart, label: "Convenient Care", sub: "We come to you,\nso you can too" },
+                ].map(({ icon: Icon, label, sub }, idx) => (
+                  <div key={label} className="flex items-start">
+                    {idx > 0 && (
+                      <div className="w-px self-stretch bg-white/20 mx-5 mt-1" />
+                    )}
+                    <div className="text-left min-w-[100px]">
+                      <Icon className="w-7 h-7 mb-2" style={{ color: "oklch(0.78 0.10 78)" }} strokeWidth={1.3} />
+                      <div className="text-sm font-semibold text-white leading-tight">{label}</div>
+                      <div className="text-[11px] text-white/60 leading-snug mt-0.5 whitespace-pre-line">{sub}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: IV drip bag — float animation preserved */}
+            <div className="hidden lg:flex justify-end items-center self-stretch">
+              <div className="relative w-[200px] xl:w-[240px] h-[560px] xl:h-[640px] float-anim mr-[-2rem] xl:mr-[-3rem]">
+                <div className="absolute inset-0 rounded-full opacity-30 blur-3xl"
+                  style={{ background: "radial-gradient(circle, oklch(0.68 0.10 78), transparent 70%)" }} />
+                <IVDripBag scrollProgress={0} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── Main Home ────────────────────────────────────────────────────────────────
 export default function Home() {
   const { data: services = [] } = trpc.services.list.useQuery();
@@ -108,7 +378,6 @@ export default function Home() {
   const seedMutation = trpc.seed.run.useMutation();
 
   const [scrollProgress, setScrollProgress] = useState(0);
-  const { splash, registerSection } = useWaterSplash();
 
   // Seed on first load if empty
   useEffect(() => {
@@ -141,96 +410,36 @@ export default function Home() {
 
   const featured = services.slice(0, 6);
 
+  // Parse hero title: "Body," and "Soul" get gold italic treatment
+  const renderHeroTitle = (raw: string) => {
+    const lines = raw.split("\n");
+    return lines.map((line, i) => {
+      // Highlight the last word of each line in gold
+      const words = line.split(" ");
+      const lastWord = words.pop();
+      const rest = words.join(" ");
+      return (
+        <span key={i} className="block">
+          {rest && <>{rest} </>}
+          <span className="gradient-text italic">{lastWord}</span>
+        </span>
+      );
+    });
+  };
+
   return (
     <div className="min-h-screen bg-cream">
       <Navbar />
-      <WaterSplashOverlay splash={splash} />
 
-      {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <section className="hero-bg min-h-screen flex items-center pt-20 relative overflow-hidden">
-        {/* Soft botanical background blobs */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-0 right-0 w-[55%] h-full opacity-30"
-            style={{ background: "radial-gradient(ellipse at 80% 40%, oklch(0.87 0.04 78), transparent 65%)" }} />
-          <div className="absolute bottom-0 left-0 w-[40%] h-[60%] opacity-20"
-            style={{ background: "radial-gradient(ellipse at 20% 80%, oklch(0.82 0.05 75), transparent 65%)" }} />
-        </div>
-
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
-          {/* Left — text */}
-          <div>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm bg-[oklch(0.92_0.03_78)] border border-[oklch(0.87_0.025_78)] text-xs font-semibold text-gold uppercase tracking-widest mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
-              Mobile IV Therapy — We Come To You
-            </div>
-
-            <h1 className="font-serif text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] text-brown mb-6">
-              {heroTitle.split("\n").map((line: string, i: number) => (
-                <span key={i} className={i === 1 ? "gradient-text block" : "block"}>{line}</span>
-              ))}
-            </h1>
-
-            {/* Botanical divider */}
-            <div className="divider-line mb-6">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" className="text-gold opacity-60">
-                <path d="M10,2 C10,2 6,6 6,10 C6,14 10,18 10,18 C10,18 14,14 14,10 C14,6 10,2 10,2 Z" stroke="currentColor" strokeWidth="1.2" fill="none"/>
-                <circle cx="10" cy="10" r="2" fill="currentColor" opacity="0.5"/>
-              </svg>
-            </div>
-
-            <p className="text-base lg:text-lg text-rw-muted leading-relaxed mb-10 max-w-lg">
-              {heroSubtitle}
-            </p>
-
-            <div className="flex flex-wrap gap-4 mb-12">
-              <Link href="/booking">
-                <button className="btn-primary flex items-center gap-2">
-                  Book Now <ArrowRight className="w-4 h-4" />
-                </button>
-              </Link>
-              <Link href="/services">
-                <button className="btn-outline flex items-center gap-2">
-                  View Our Drips
-                </button>
-              </Link>
-            </div>
-
-            {/* Quick benefit icons */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-              {[
-                { icon: Zap, label: "Boost Energy", sub: "Fight fatigue & feel revitalised" },
-                { icon: Shield, label: "Support Immunity", sub: "Strengthen your body's defenses" },
-                { icon: Sparkles, label: "Enhance Wellness", sub: "Hydrate, restore & feel your best" },
-                { icon: MapPin, label: "We Come To You", sub: "Home, hotel, or office — anywhere" },
-              ].map(({ icon: Icon, label, sub }) => (
-                <div key={label} className="text-center">
-                  <div className="w-10 h-10 rounded-full bg-[oklch(0.92_0.03_78)] border border-[oklch(0.87_0.025_78)] flex items-center justify-center mx-auto mb-2">
-                    <Icon className="w-4 h-4 text-gold" strokeWidth={1.5} />
-                  </div>
-                  <div className="text-xs font-semibold text-brown">{label}</div>
-                  <div className="text-[10px] text-rw-muted leading-tight mt-0.5">{sub}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Right — animated IV drip bag */}
-          <div className="flex justify-center lg:justify-end items-center">
-            <div className="relative w-72 h-[420px] lg:w-80 lg:h-[480px] float-anim">
-              {/* Soft glow behind bag */}
-              <div className="absolute inset-0 rounded-full opacity-30 blur-3xl"
-                style={{ background: "radial-gradient(circle, oklch(0.68 0.10 78), transparent 70%)" }} />
-              <IVDripBag scrollProgress={scrollProgress} />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* ── Hero (video + liquid glass) ──────────────────────────────────── */}
+      <VideoHero
+        heroTitle={heroTitle}
+        heroSubtitle={heroSubtitle}
+        renderHeroTitle={renderHeroTitle}
+      />
 
       {/* ── Stats bar ─────────────────────────────────────────────────────── */}
-      <section
-        ref={(el) => registerSection(el as HTMLElement)}
-        className="section-cream2 py-12 border-y border-[oklch(0.87_0.025_78)]"
-      >
+      <section className="section-cream2 py-12 border-y border-[oklch(0.87_0.025_78)]">
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
             { value: 500, suffix: "+", label: "Clients Treated" },
@@ -249,10 +458,7 @@ export default function Home() {
       </section>
 
       {/* ── Featured Drips (Flip Cards) ────────────────────────────────────── */}
-      <section
-        ref={(el) => registerSection(el as HTMLElement)}
-        className="section-cream py-20"
-      >
+      <section className="section-cream py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14 reveal">
             <span className="text-xs font-bold uppercase tracking-widest text-gold">Our Protocols</span>
@@ -286,11 +492,7 @@ export default function Home() {
       </section>
 
       {/* ── Benefits ──────────────────────────────────────────────────────── */}
-      <section
-        id="benefits"
-        ref={(el) => registerSection(el as HTMLElement)}
-        className="section-cream2 py-20"
-      >
+      <section id="benefits" className="section-cream2 py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="reveal-left">
@@ -352,11 +554,7 @@ export default function Home() {
       </section>
 
       {/* ── Process ───────────────────────────────────────────────────────── */}
-      <section
-        id="process"
-        ref={(el) => registerSection(el as HTMLElement)}
-        className="section-cream py-20"
-      >
+      <section id="process" className="section-cream py-20">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-14 reveal">
             <span className="text-xs font-bold uppercase tracking-widest text-gold">How It Works</span>
@@ -395,10 +593,7 @@ export default function Home() {
 
       {/* ── Testimonials ──────────────────────────────────────────────────── */}
       {testimonials.length > 0 && (
-        <section
-          ref={(el) => registerSection(el as HTMLElement)}
-          className="section-gold py-20"
-        >
+        <section className="section-gold py-20">
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center mb-12 reveal">
               <span className="text-xs font-bold uppercase tracking-widest text-[oklch(0.68_0.10_78)]">Client Stories</span>
@@ -432,10 +627,7 @@ export default function Home() {
       )}
 
       {/* ── CTA Banner ────────────────────────────────────────────────────── */}
-      <section
-        ref={(el) => registerSection(el as HTMLElement)}
-        className="section-cream py-20"
-      >
+      <section className="section-cream py-20">
         <div className="max-w-3xl mx-auto px-6 text-center reveal">
           <span className="text-xs font-bold uppercase tracking-widest text-gold">Begin Your Journey</span>
           <h2 className="font-serif text-4xl lg:text-5xl font-bold text-brown mt-3 mb-4">

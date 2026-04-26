@@ -54,18 +54,11 @@ export default function AdminLogin() {
         >
           {/* Logo */}
           <div className="text-center mb-8">
-            <div
-              className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center"
-              style={{ background: "oklch(0.52 0.10 75)" }}
-            >
-              <Droplets className="w-8 h-8 text-white" />
-            </div>
-            <h1
-              className="font-serif text-2xl font-bold mb-1"
-              style={{ color: "oklch(0.18 0.05 60)" }}
-            >
-              Ruhi Wellness
-            </h1>
+            <img
+              src="/manus-storage/ruhi-logo-transparent_870013bb.png"
+              alt="Ruhi Wellness"
+              className="h-20 w-auto object-contain mx-auto mb-3"
+            />
             <p className="text-sm" style={{ color: "oklch(0.55 0.04 65)" }}>
               Admin Panel — Sign In
             </p>

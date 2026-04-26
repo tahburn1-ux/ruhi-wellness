@@ -16,15 +16,14 @@ function AdminSidebar({ active }: { active: string }) {
   ];
   return (
     <aside className="w-60 min-h-screen bg-[oklch(0.15_0.04_220)] text-white flex flex-col">
-      <div className="p-6 border-b border-white/10">
+        <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[oklch(0.52_0.10_75)] to-[oklch(0.45_0.1_195)] flex items-center justify-center">
-            <Droplets className="w-4 h-4 text-white" />
-          </div>
-          <div>
-            <div className="font-serif font-semibold text-sm">Ruhi Wellness</div>
-            <div className="text-xs text-white/50">Admin Panel</div>
-          </div>
+          <img
+            src="/manus-storage/ruhi-logo-transparent_870013bb.png"
+            alt="Ruhi Wellness"
+            className="h-10 w-auto object-contain"
+          />
+          <div className="text-xs text-white/50 ml-1">Admin Panel</div>
         </div>
       </div>
       <nav className="flex-1 p-4 space-y-1">

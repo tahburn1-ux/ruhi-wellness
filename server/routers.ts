@@ -203,8 +203,8 @@ export const appRouter = router({
       ];
       for (const t of testimonialData) await createTestimonial({ ...t, isActive: true, sortOrder: 0 } as any);
       await upsertSettings({
-        "hero.title":"Revitalise at the Cellular Level.",
-        "hero.subtitle":"Experience pure, targeted hydration and nutrient delivery in a soothing, premium environment. Formulated for athletes, professionals, and wellness seekers.",
+        "hero.title":"Revive Your Body,\nRevitalise Your Soul",
+        "hero.subtitle":"Nutrient-rich IV therapy delivered in the comfort of your home, hotel, or office. Because life doesn't slow down, and neither should you.",
         "about.title":"Why Ruhi Wellness?",
         "about.text":"At Ruhi Wellness, we believe optimal health starts at the cellular level. Our clinically formulated IV drip therapies deliver nutrients directly into your bloodstream, bypassing the digestive system for 100% absorption.",
         "contact.phone":"+44 (0) 7700 900000",

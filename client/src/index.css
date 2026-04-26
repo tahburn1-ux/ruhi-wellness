@@ -255,57 +255,64 @@
 }
 .liquid-shimmer { animation: shimmer 3s ease-in-out infinite; }
 
-/* ── Full-page water splash ──────────────────────────────────────────────── */
-@keyframes splash-drop {
-  0%   { transform: translate(-50%, -150%) scale(0.1); opacity: 1; }
-  40%  { transform: translate(-50%, -50%) scale(0.15); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(0.15); opacity: 1; }
+/* ── Liquid Glass ────────────────────────────────────────────────────────── */
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.01);
+  background-blend-mode: luminosity;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
 }
-@keyframes splash-expand {
-  0%   { transform: translate(-50%, -50%) scale(0.15); opacity: 0.95; }
-  100% { transform: translate(-50%, -50%) scale(25); opacity: 0; }
-}
-@keyframes ripple-out {
-  0%   { transform: translate(-50%, -50%) scale(0.2); opacity: 0.6; }
-  100% { transform: translate(-50%, -50%) scale(6);   opacity: 0; }
-}
-
-.water-splash-circle {
+.liquid-glass::before {
+  content: '';
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 120px;
-  height: 160px;
-  background: radial-gradient(ellipse at 50% 40%,
-    oklch(0.68 0.10 78 / 0.85) 0%,
-    oklch(0.52 0.10 75 / 0.75) 50%,
-    oklch(0.38 0.08 68 / 0.65) 100%);
-  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-  transform: translate(-50%, -150%) scale(0.1);
-  opacity: 0;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0.45) 0%,
+    rgba(255,255,255,0.15) 20%,
+    rgba(255,255,255,0) 40%,
+    rgba(255,255,255,0) 60%,
+    rgba(255,255,255,0.15) 80%,
+    rgba(255,255,255,0.45) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
-.water-splash-circle[data-phase="drop"] {
-  animation: splash-drop 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+/* Ruhi-tinted glass variant — warm gold tint */
+.liquid-glass-gold {
+  background: rgba(180, 140, 60, 0.06);
+  background-blend-mode: luminosity;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(212, 175, 80, 0.18);
+  position: relative;
+  overflow: hidden;
 }
-.water-splash-circle[data-phase="expand"] {
-  animation: splash-expand 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-.water-splash-circle[data-phase="reveal"],
-.water-splash-circle[data-phase="done"] {
-  opacity: 0;
-}
-
-.water-ripple {
+.liquid-glass-gold::before {
+  content: '';
   position: absolute;
-  left: 50%;
-  top: 50%;
-  border-radius: 50%;
-  border: 2px solid oklch(0.52 0.10 75 / 0.5);
-  animation: ripple-out 0.7s ease-out forwards;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(180deg,
+    rgba(212,175,80,0.55) 0%,
+    rgba(212,175,80,0.18) 20%,
+    rgba(212,175,80,0) 40%,
+    rgba(212,175,80,0) 60%,
+    rgba(212,175,80,0.18) 80%,
+    rgba(212,175,80,0.55) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
-.water-ripple-1 { width: 80px;  height: 80px;  animation-delay: 0s; }
-.water-ripple-2 { width: 120px; height: 120px; animation-delay: 0.08s; }
-.water-ripple-3 { width: 160px; height: 160px; animation-delay: 0.16s; }
 
 /* ── Step connector ──────────────────────────────────────────────────────── */
 .step-connector { position: relative; }

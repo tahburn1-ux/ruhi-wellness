@@ -9,10 +9,11 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[oklch(0.62_0.10_75)] to-[oklch(0.48_0.09_68)] flex items-center justify-center">
-                <Droplets className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-serif font-semibold text-lg">Ruhi Wellness</span>
+              <img
+                src="/manus-storage/ruhi-logo-transparent_870013bb.png"
+                alt="Ruhi Wellness"
+                className="h-14 w-auto object-contain"
+              />
             </div>
             <p className="text-sm text-[oklch(0.72_0.04_68)] leading-relaxed">
               Premium mobile IV therapy delivered to your home, hotel, or office across London.
