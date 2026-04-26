@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import { createServer } from "http";
 import net from "net";
+import path from "path";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
@@ -21,7 +22,12 @@ async function runMigrations() {
     const connection = await mysql.createConnection(process.env.DATABASE_URL);
     const db = drizzle(connection);
     console.log("[DB] Running migrations...");
-    await migrate(db, { migrationsFolder: "./drizzle" });
+    // In production (Railway), migrations are copied to dist/drizzle during build
+    // In development, they're at ./drizzle
+    const migrationsFolder = process.env.NODE_ENV === "production"
+      ? path.resolve(process.cwd(), "dist", "drizzle")
+      : path.resolve(process.cwd(), "drizzle");
+    await migrate(db, { migrationsFolder });
     console.log("[DB] Migrations complete");
     await connection.end();
   } catch (err) {
