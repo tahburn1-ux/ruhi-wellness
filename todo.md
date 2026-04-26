@@ -29,7 +29,7 @@
 - [x] Flip card animations on service cards
 - [x] Scroll reveal animations on sections
 - [x] Responsive design (mobile-first)
-- [ ] Railway deployment config (Procfile / railway.json)
-- [ ] GitHub push using provided token
-- [ ] Add logo when provided by client
-- [ ] Update contact details (phone, email, address) in admin settings
+- [x] Railway deployment config (railway.json + DEPLOY.md guide)
+- [ ] GitHub export — manual user step: Management UI → ⋯ More → Export to GitHub (see DEPLOY.md)
+- [ ] Add logo when provided by client (upload via Admin → Settings → Images)
+- [ ] Update contact details (phone, email, address) in admin settings (editable at /admin/settings)
