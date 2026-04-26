@@ -178,107 +178,131 @@ function BotanicalBackground() {
 }
 
 // ── Video Hero ──────────────────────────────────────────────────────────────
+function GoldParticleCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    let W = 0, H = 0;
+
+    // Particle definition
+    interface Particle {
+      x: number; y: number;
+      r: number;       // radius
+      vx: number; vy: number;
+      alpha: number;   // current opacity
+      alphaDir: number; // fade in/out speed
+      hue: number;     // gold hue variation
+    }
+
+    const PARTICLE_COUNT = 90;
+    const particles: Particle[] = [];
+
+    const rand = (min: number, max: number) => Math.random() * (max - min) + min;
+
+    const makeParticle = (): Particle => ({
+      x: rand(0, W),
+      y: rand(0, H),
+      r: rand(2, 7),
+      vx: rand(-0.18, 0.18),
+      vy: rand(-0.22, -0.06),
+      alpha: rand(0.05, 0.55),
+      alphaDir: rand(0.001, 0.004) * (Math.random() > 0.5 ? 1 : -1),
+      hue: rand(38, 52),
+    });
+
+    const resize = () => {
+      W = canvas.offsetWidth;
+      H = canvas.offsetHeight;
+      canvas.width = W;
+      canvas.height = H;
+      particles.length = 0;
+      for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(makeParticle());
+    };
+
+    const draw = () => {
+      // Soft cream background
+      ctx.fillStyle = "oklch(0.975 0.012 80)";
+      ctx.fillRect(0, 0, W, H);
+
+      // Large soft bokeh blobs
+      const blobs = [
+        { x: W * 0.72, y: H * 0.35, r: H * 0.42, a: 0.13 },
+        { x: W * 0.85, y: H * 0.65, r: H * 0.32, a: 0.09 },
+        { x: W * 0.55, y: H * 0.15, r: H * 0.25, a: 0.07 },
+      ];
+      blobs.forEach(b => {
+        const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+        g.addColorStop(0, `rgba(196,158,80,${b.a})`);
+        g.addColorStop(1, "rgba(196,158,80,0)");
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+      });
+
+      // Particles
+      for (const p of particles) {
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 2.5);
+        g.addColorStop(0, `hsla(${p.hue},65%,55%,${p.alpha})`);
+        g.addColorStop(1, `hsla(${p.hue},65%,55%,0)`);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = g;
+        ctx.fill();
+
+        // Move
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha += p.alphaDir;
+        if (p.alpha > 0.6 || p.alpha < 0.03) p.alphaDir *= -1;
+        if (p.y < -20 || p.x < -20 || p.x > W + 20) {
+          p.x = rand(0, W);
+          p.y = H + 10;
+        }
+      }
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    resize();
+    draw();
+    window.addEventListener("resize", resize);
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full"
+      style={{ display: "block" }}
+    />
+  );
+}
+
 function VideoHero({ heroTitle, heroSubtitle, renderHeroTitle }: {
   heroTitle: string;
   heroSubtitle: string;
   renderHeroTitle: (raw: string) => React.ReactNode;
 }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const fadingOutRef = useRef(false);
-  const animFrameRef = useRef<number | null>(null);
-
-  const cancelAnim = () => {
-    if (animFrameRef.current !== null) {
-      cancelAnimationFrame(animFrameRef.current);
-      animFrameRef.current = null;
-    }
-  };
-
-  const fadeIn = (video: HTMLVideoElement) => {
-    cancelAnim();
-    fadingOutRef.current = false;
-    const start = video.style.opacity ? parseFloat(video.style.opacity) : 0;
-    const startTime = performance.now();
-    const duration = 500;
-    const step = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      video.style.opacity = String(start + (1 - start) * progress);
-      if (progress < 1) animFrameRef.current = requestAnimationFrame(step);
-    };
-    animFrameRef.current = requestAnimationFrame(step);
-  };
-
-  const fadeOut = (video: HTMLVideoElement) => {
-    if (fadingOutRef.current) return;
-    fadingOutRef.current = true;
-    cancelAnim();
-    const start = parseFloat(video.style.opacity || "1");
-    const startTime = performance.now();
-    const duration = 500;
-    const step = (now: number) => {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      video.style.opacity = String(start * (1 - progress));
-      if (progress < 1) animFrameRef.current = requestAnimationFrame(step);
-    };
-    animFrameRef.current = requestAnimationFrame(step);
-  };
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-    video.style.opacity = "0";
-
-    const handleTimeUpdate = () => {
-      if (!fadingOutRef.current && video.duration - video.currentTime <= 0.55) {
-        fadeOut(video);
-      }
-    };
-    const handleEnded = () => {
-      video.style.opacity = "0";
-      fadingOutRef.current = false;
-      setTimeout(() => {
-        video.currentTime = 0;
-        video.play().then(() => fadeIn(video)).catch(() => {});
-      }, 100);
-    };
-    const handleCanPlay = () => fadeIn(video);
-
-    video.addEventListener("timeupdate", handleTimeUpdate);
-    video.addEventListener("ended", handleEnded);
-    video.addEventListener("canplay", handleCanPlay);
-    video.play().catch(() => {});
-
-    return () => {
-      cancelAnim();
-      video.removeEventListener("timeupdate", handleTimeUpdate);
-      video.removeEventListener("ended", handleEnded);
-      video.removeEventListener("canplay", handleCanPlay);
-    };
-  }, []);
-
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden bg-black">
-      {/* Full-screen video */}
-      <video
-        ref={videoRef}
-        muted
-        playsInline
-        loop={false}
-        className="absolute inset-0 w-full h-full object-cover translate-y-[17%]"
-        style={{ opacity: 0 }}
-      >
-        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260328_115001_bcdaa3b4-03de-47e7-ad63-ae3e392c32d4.mp4" type="video/mp4" />
-      </video>
+    <section className="relative min-h-screen flex flex-col overflow-hidden" style={{ background: "oklch(0.975 0.012 80)" }}>
+      {/* Animated gold particle canvas */}
+      <GoldParticleCanvas />
 
-      {/* Warm cream-gold overlay — keeps Ruhi palette visible over video */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.12_0.04_60/0.55)] via-[oklch(0.10_0.03_65/0.35)] to-[oklch(0.08_0.02_70/0.20)] pointer-events-none" />
       {/* Bottom fade so content below hero blends smoothly */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[oklch(0.975_0.012_80)] to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[oklch(0.975_0.012_80)] to-transparent pointer-events-none z-10" />
 
-      {/* Botanical SVG overlay — gold line art on top of video */}
-      <div className="absolute inset-0 pointer-events-none opacity-30">
+      {/* Botanical SVG overlay — gold line art */}
+      <div className="absolute inset-0 pointer-events-none opacity-60 z-10">
         <BotanicalBackground />
       </div>
 
@@ -290,14 +314,14 @@ function VideoHero({ heroTitle, heroSubtitle, renderHeroTitle }: {
             {/* Left: text column */}
             <div className="max-w-[640px]">
               {/* Liquid glass badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full liquid-glass-gold text-xs font-semibold text-[oklch(0.88_0.08_78)] uppercase tracking-widest mb-8">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-sm bg-[oklch(0.92_0.03_78)] border border-[oklch(0.87_0.025_78)] text-xs font-semibold text-gold uppercase tracking-widest mb-8">
                 <span className="w-1.5 h-1.5 rounded-full bg-[oklch(0.78_0.10_78)] animate-pulse" />
                 Mobile IV Therapy — We Come To You
               </div>
 
               {/* Headline */}
               <h1
-                className="text-[3.6rem] lg:text-[4.8rem] xl:text-[5.6rem] font-bold leading-[1.05] text-white mb-6"
+                className="text-[3.6rem] lg:text-[4.8rem] xl:text-[5.6rem] font-bold leading-[1.05] text-brown mb-6"
                 style={{ fontFamily: "'Cormorant Garamond', serif" }}
               >
                 {renderHeroTitle(heroTitle)}
@@ -312,7 +336,7 @@ function VideoHero({ heroTitle, heroSubtitle, renderHeroTitle }: {
               </div>
 
               {/* Subtitle */}
-              <p className="text-base lg:text-[1.05rem] text-white/80 leading-relaxed mb-10 max-w-[480px]">
+              <p className="text-base lg:text-[1.05rem] text-rw-muted leading-relaxed mb-10 max-w-[480px]">
                 {heroSubtitle}
               </p>
 
@@ -327,7 +351,7 @@ function VideoHero({ heroTitle, heroSubtitle, renderHeroTitle }: {
                   </button>
                 </Link>
                 <Link href="/services">
-                  <button className="liquid-glass-gold flex items-center gap-2 px-8 py-3.5 rounded-full font-semibold text-sm uppercase tracking-widest text-white hover:bg-white/5 transition-colors">
+                  <button className="btn-outline flex items-center gap-2">
                     View Our Drips
                   </button>
                 </Link>
@@ -343,12 +367,12 @@ function VideoHero({ heroTitle, heroSubtitle, renderHeroTitle }: {
                 ].map(({ icon: Icon, label, sub }, idx) => (
                   <div key={label} className="flex items-start">
                     {idx > 0 && (
-                      <div className="w-px self-stretch bg-white/20 mx-5 mt-1" />
+                      <div className="w-px self-stretch bg-[oklch(0.82_0.03_78)] mx-5 mt-1" />
                     )}
                     <div className="text-left min-w-[100px]">
-                      <Icon className="w-7 h-7 mb-2" style={{ color: "oklch(0.78 0.10 78)" }} strokeWidth={1.3} />
-                      <div className="text-sm font-semibold text-white leading-tight">{label}</div>
-                      <div className="text-[11px] text-white/60 leading-snug mt-0.5 whitespace-pre-line">{sub}</div>
+                      <Icon className="w-7 h-7 mb-2 text-gold" strokeWidth={1.3} />
+                      <div className="text-sm font-semibold text-brown leading-tight">{label}</div>
+                      <div className="text-[11px] text-rw-muted leading-snug mt-0.5 whitespace-pre-line">{sub}</div>
                     </div>
                   </div>
                 ))}
