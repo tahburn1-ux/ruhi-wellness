@@ -35,8 +35,16 @@ async function verifyAdminPassword(password: string, storedHash: string): Promis
   });
 }
 
-const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
-  if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN", message: "Admin access required" });
+const adminProcedure = publicProcedure.use(async ({ ctx, next }) => {
+  const cookieHeader = ctx.req.headers.cookie;
+  const cookies = parseCookies(cookieHeader || "");
+  const token = cookies[ADMIN_SESSION_COOKIE];
+  if (!token) throw new TRPCError({ code: "UNAUTHORIZED", message: "Admin login required" });
+  try {
+    await jwtVerify(token, ADMIN_JWT_SECRET);
+  } catch {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid or expired admin session" });
+  }
   return next({ ctx });
 });
 
