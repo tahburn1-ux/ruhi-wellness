@@ -54,3 +54,10 @@
 - [ ] Remove clinic location card from Contact page, replace with service area info
 - [ ] Update booking confirmation to show the address we are coming to
 - [ ] Update admin booking view to show client delivery address
+
+## UI Fixes (Round 4)
+- [x] Apply mix-blend-mode: multiply to logo img so cream background blends on all light backgrounds
+- [x] Remove "Reviews" link from navbar
+- [x] Fix Benefits nav link — now scrolls to #benefits section on home page
+- [x] Fix admin panel authentication — reset password, admin JWT cookie auth working
+- [x] Convert testimonials/reviews section on Home page into an auto-scrolling carousel with prev/next controls

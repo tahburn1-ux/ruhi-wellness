@@ -394,6 +394,125 @@ function VideoHero({ heroTitle, heroSubtitle, renderHeroTitle }: {
   );
 }
 
+// ── Reviews Carousel ────────────────────────────────────────────────────────
+function ReviewsCarousel({ testimonials }: { testimonials: any[] }) {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const total = testimonials.length;
+
+  // Auto-advance every 4 seconds
+  useEffect(() => {
+    if (paused || total <= 1) return;
+    const timer = setInterval(() => setCurrent(c => (c + 1) % total), 4000);
+    return () => clearInterval(timer);
+  }, [paused, total]);
+
+  const prev = () => setCurrent(c => (c - 1 + total) % total);
+  const next = () => setCurrent(c => (c + 1) % total);
+
+  // Show 3 cards on desktop, 1 on mobile
+  const getVisible = () => {
+    if (total === 0) return [];
+    const indices = [];
+    for (let i = 0; i < Math.min(3, total); i++) {
+      indices.push((current + i) % total);
+    }
+    return indices;
+  };
+
+  return (
+    <section className="section-gold py-20" id="reviews">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="text-center mb-12 reveal">
+          <span className="text-xs font-bold uppercase tracking-widest text-[oklch(0.68_0.10_78)]">Client Stories</span>
+          <h2 className="font-serif text-4xl font-bold text-[oklch(0.975_0.012_80)] mt-2">
+            Real Results, Real People
+          </h2>
+        </div>
+
+        <div
+          className="relative"
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+        >
+          {/* Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-500">
+            {getVisible().map((idx, pos) => {
+              const t = testimonials[idx];
+              return (
+                <div
+                  key={`${t.id}-${pos}`}
+                  className={`glass-card rounded-xl p-6 border border-white/20 transition-all duration-500 ${
+                    pos === 1 ? "scale-105 shadow-xl" : "opacity-80"
+                  }`}
+                >
+                  <div className="flex items-center gap-1 mb-3">
+                    {[...Array(t.rating || 5)].map((_: any, j: number) => (
+                      <Star key={j} className="w-4 h-4 fill-[oklch(0.68_0.10_78)] text-[oklch(0.68_0.10_78)]" />
+                    ))}
+                  </div>
+                  <p className="text-sm text-brown leading-relaxed mb-4 italic">"{t.text}"</p>
+                  <div className="flex items-center gap-3 pt-3 border-t border-[oklch(0.87_0.025_78)]">
+                    <div className="w-9 h-9 rounded-full bg-gold flex items-center justify-center text-[oklch(0.975_0.012_80)] text-xs font-bold">
+                      {t.initials || t.clientName.slice(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-brown">{t.clientName}</div>
+                      {t.serviceName && <div className="text-xs text-gold">{t.serviceName}</div>}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Prev / Next controls */}
+          {total > 1 && (
+            <>
+              <button
+                onClick={prev}
+                className="absolute -left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[oklch(0.975_0.012_80)] border border-[oklch(0.87_0.025_78)] shadow flex items-center justify-center text-gold hover:bg-[oklch(0.92_0.03_78)] transition-colors"
+                aria-label="Previous review"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              <button
+                onClick={next}
+                className="absolute -right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[oklch(0.975_0.012_80)] border border-[oklch(0.87_0.025_78)] shadow flex items-center justify-center text-gold hover:bg-[oklch(0.92_0.03_78)] transition-colors"
+                aria-label="Next review"
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Dot indicators */}
+        {total > 1 && (
+          <div className="flex justify-center gap-2 mt-8">
+            {testimonials.map((_: any, i: number) => (
+              <button
+                key={i}
+                onClick={() => setCurrent(i)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  i === current
+                    ? "bg-gold w-6"
+                    : "bg-[oklch(0.68_0.10_78)]/40 hover:bg-[oklch(0.68_0.10_78)]/70"
+                }`}
+                aria-label={`Go to review ${i + 1}`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
 // ── Main Home ────────────────────────────────────────────────────────────────
 export default function Home() {
   const { data: services = [] } = trpc.services.list.useQuery();
@@ -617,37 +736,7 @@ export default function Home() {
 
       {/* ── Testimonials ──────────────────────────────────────────────────── */}
       {testimonials.length > 0 && (
-        <section className="section-gold py-20">
-          <div className="max-w-6xl mx-auto px-6">
-            <div className="text-center mb-12 reveal">
-              <span className="text-xs font-bold uppercase tracking-widest text-[oklch(0.68_0.10_78)]">Client Stories</span>
-              <h2 className="font-serif text-4xl font-bold text-[oklch(0.975_0.012_80)] mt-2">
-                Real Results, Real People
-              </h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {testimonials.map((t: any, i: number) => (
-                <div key={t.id} className="reveal glass-card rounded-xl p-6 border border-white/20" style={{ transitionDelay: `${i * 80}ms` }}>
-                  <div className="flex items-center gap-1 mb-3">
-                    {[...Array(t.rating || 5)].map((_, j) => (
-                      <Star key={j} className="w-4 h-4 fill-[oklch(0.68_0.10_78)] text-[oklch(0.68_0.10_78)]" />
-                    ))}
-                  </div>
-                  <p className="text-sm text-brown leading-relaxed mb-4 italic">"{t.text}"</p>
-                  <div className="flex items-center gap-3 pt-3 border-t border-[oklch(0.87_0.025_78)]">
-                    <div className="w-9 h-9 rounded-full bg-gold flex items-center justify-center text-[oklch(0.975_0.012_80)] text-xs font-bold">
-                      {t.initials || t.clientName.slice(0, 2).toUpperCase()}
-                    </div>
-                    <div>
-                      <div className="text-sm font-semibold text-brown">{t.clientName}</div>
-                      {t.serviceName && <div className="text-xs text-gold">{t.serviceName}</div>}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        <ReviewsCarousel testimonials={testimonials} />
       )}
 
       {/* ── CTA Banner ────────────────────────────────────────────────────── */}

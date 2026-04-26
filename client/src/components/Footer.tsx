@@ -10,10 +10,9 @@ export default function Footer() {
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <img
-                src="/manus-storage/ruhi-logo-transparent_870013bb.png"
+                src="/manus-storage/ruhi-logo-clean_b23934de.png"
                 alt="Ruhi Wellness"
-                className="h-14 w-auto object-contain"
-              />
+                className="h-14 w-auto object-contain" />
             </div>
             <p className="text-sm text-[oklch(0.72_0.04_68)] leading-relaxed">
               Premium mobile IV therapy delivered to your home, hotel, or office across London.
