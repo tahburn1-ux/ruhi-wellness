@@ -180,3 +180,20 @@ export async function deleteContactMessage(id: number) {
   const db = await getDb(); if (!db) throw new Error("DB unavailable");
   await db.delete(contactMessages).where(eq(contactMessages.id, id));
 }
+
+// ── Admin Credentials ─────────────────────────────────────────────────────────
+export async function getAdminByUsername(username: string) {
+  // Use mysql2 pool directly for raw query (adminCredentials not in drizzle schema)
+  const mysql2 = await import("mysql2/promise");
+  const pool = mysql2.createPool(process.env.DATABASE_URL!);
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM adminCredentials WHERE username = ? LIMIT 1",
+      [username]
+    );
+    const arr = rows as Array<{ id: number; username: string; passwordHash: string }>;
+    return arr.length > 0 ? arr[0] : null;
+  } finally {
+    await pool.end();
+  }
+}

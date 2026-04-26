@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Droplets } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import { useAuth } from "@/_core/hooks/useAuth";
 
 const navLinks = [
   { href: "/services", label: "Services" },
   { href: "/#benefits", label: "Benefits" },
-  { href: "/#process", label: "Process" },
+  { href: "/services", label: "Our Drips" },
+  { href: "/#process", label: "About Us" },
+  { href: "/contact#reviews", label: "Reviews" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -13,70 +16,68 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [location] = useLocation();
+  const { user } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const isActive = (href: string) => location === href;
+  useEffect(() => { setOpen(false); }, [location]);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "navbar-blur shadow-sm" : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[oklch(0.38_0.09_220)] to-[oklch(0.55_0.12_195)] flex items-center justify-center group-hover:scale-110 transition-transform">
-            <Droplets className="w-4 h-4 text-white" />
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "navbar-blur shadow-sm" : "bg-transparent"}`}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
+
+        {/* Brand mark */}
+        <Link href="/">
+          <div className="flex items-center gap-2.5 cursor-pointer group">
+            <svg width="30" height="34" viewBox="0 0 30 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15,1 C15,1 8,8 8,15 C8,22 15,33 15,33 C15,33 22,22 22,15 C22,8 15,1 15,1 Z"
+                fill="none" stroke="oklch(0.52 0.10 75)" strokeWidth="1.6" />
+              <path d="M10,13 C10,13 12,9 15,9 C18,9 20,13 20,13 C20,13 18,17 15,17 C12,17 10,13 10,13 Z"
+                fill="none" stroke="oklch(0.52 0.10 75)" strokeWidth="1.4" />
+              <circle cx="15" cy="13" r="2.2" fill="oklch(0.52 0.10 75)" opacity="0.75" />
+            </svg>
+            <div className="leading-none">
+              <div className="font-serif text-[17px] font-bold text-[oklch(0.28_0.05_60)] tracking-wider">RUHI</div>
+              <div className="text-[8px] font-semibold text-[oklch(0.52_0.10_75)] uppercase tracking-[0.22em]">WELLNESS</div>
+            </div>
           </div>
-          <span className="font-serif font-semibold text-lg text-[oklch(0.28_0.09_220)]">
-            Ruhi Wellness
-          </span>
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`text-sm font-medium transition-colors relative pb-1 ${
-                isActive(link.href)
-                  ? "text-[oklch(0.38_0.09_220)]"
-                  : "text-[oklch(0.35_0.03_220)] hover:text-[oklch(0.38_0.09_220)]"
-              }`}
-            >
-              {link.label}
-              {isActive(link.href) && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[oklch(0.38_0.09_220)] rounded-full" />
-              )}
+        {/* Desktop links */}
+        <div className="hidden lg:flex items-center gap-7">
+          {navLinks.map(({ href, label }) => (
+            <Link key={label} href={href}>
+              <span className={`text-[13px] font-medium tracking-wide cursor-pointer transition-colors duration-200 relative group
+                ${location === href ? "text-[oklch(0.52_0.10_75)]" : "text-[oklch(0.30_0.05_62)] hover:text-[oklch(0.52_0.10_75)]"}`}>
+                {label}
+                <span className={`absolute -bottom-0.5 left-0 h-px bg-[oklch(0.52_0.10_75)] transition-all duration-300
+                  ${location === href ? "w-full" : "w-0 group-hover:w-full"}`} />
+              </span>
             </Link>
           ))}
         </div>
 
-        {/* CTA buttons */}
-        <div className="hidden md:flex items-center gap-3">
-          <Link
-            href="/admin"
-            className="text-sm font-medium text-[oklch(0.5_0.03_215)] hover:text-[oklch(0.38_0.09_220)] transition-colors"
-          >
-            Admin
-          </Link>
+        {/* CTA */}
+        <div className="hidden lg:flex items-center gap-4">
+          {user?.role === "admin" && (
+            <Link href="/admin">
+              <span className="text-[13px] font-medium text-[oklch(0.52_0.04_72)] hover:text-[oklch(0.52_0.10_75)] cursor-pointer transition-colors">
+                Admin
+              </span>
+            </Link>
+          )}
           <Link href="/booking">
-            <button className="btn-primary text-sm py-2 px-5">
-              Book Now
-            </button>
+            <button className="btn-primary text-[12px] py-2.5 px-6">Book Now</button>
           </Link>
         </div>
 
-        {/* Mobile hamburger */}
+        {/* Mobile toggle */}
         <button
-          className="md:hidden p-2 text-[oklch(0.38_0.09_220)]"
+          className="lg:hidden p-2 text-[oklch(0.28_0.05_60)] hover:text-[oklch(0.52_0.10_75)] transition-colors"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -84,22 +85,24 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile dropdown */}
       {open && (
-        <div className="md:hidden navbar-blur border-t border-[oklch(0.88_0.01_215)]">
-          <div className="px-6 py-4 flex flex-col gap-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-[oklch(0.35_0.03_220)] hover:text-[oklch(0.38_0.09_220)] transition-colors"
-                onClick={() => setOpen(false)}
-              >
-                {link.label}
+        <div className="lg:hidden navbar-blur border-t border-[oklch(0.87_0.025_78)]">
+          <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col gap-4">
+            {navLinks.map(({ href, label }) => (
+              <Link key={label} href={href}>
+                <span className="text-sm font-medium text-[oklch(0.30_0.05_62)] hover:text-[oklch(0.52_0.10_75)] cursor-pointer transition-colors block py-1">
+                  {label}
+                </span>
               </Link>
             ))}
-            <Link href="/booking" onClick={() => setOpen(false)}>
-              <button className="btn-primary text-sm w-full">Book Now</button>
+            {user?.role === "admin" && (
+              <Link href="/admin">
+                <span className="text-sm font-medium text-[oklch(0.52_0.04_72)] hover:text-[oklch(0.52_0.10_75)] cursor-pointer transition-colors block py-1">Admin</span>
+              </Link>
+            )}
+            <Link href="/booking">
+              <button className="btn-primary w-full mt-2">Book Now</button>
             </Link>
           </div>
         </div>

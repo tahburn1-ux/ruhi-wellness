@@ -33,3 +33,24 @@
 - [ ] GitHub export — manual user step: Management UI → ⋯ More → Export to GitHub (see DEPLOY.md)
 - [ ] Add logo when provided by client (upload via Admin → Settings → Images)
 - [ ] Update contact details (phone, email, address) in admin settings (editable at /admin/settings)
+
+## UI Updates (Round 2)
+- [ ] Remove scroll sidebar indicator (DripScrollIndicator component)
+- [ ] Add FULL-PAGE water drop splash animation covering entire screen as section transition on scroll
+- [ ] Upload hero background image to storage and use in hero
+- [ ] Retheme to warm cream/gold brand palette (matching provided logo design)
+- [ ] Animated IV drip bag SVG in hero — liquid fill moves on scroll, ripple on click
+- [ ] Rebuild hero layout to match brand image (left text, right IV bag, botanical elements)
+
+## UI Polish (Round 3)
+- [ ] Remove ALL emojis site-wide and replace with lucide-react SVG icons
+- [ ] Remove DripScrollIndicator from all remaining pages
+- [ ] Fix /booking route alias
+- [ ] Apply gold theme consistently across all pages
+
+## Mobile Service Updates
+- [ ] Update all hero/services/footer copy to reflect mobile at-home IV drip service
+- [ ] Add delivery address field to booking flow
+- [ ] Remove clinic location card from Contact page, replace with service area info
+- [ ] Update booking confirmation to show the address we are coming to
+- [ ] Update admin booking view to show client delivery address

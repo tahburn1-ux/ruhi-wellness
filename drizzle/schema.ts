@@ -64,6 +64,7 @@ export const bookings = mysqlTable("bookings", {
   email: varchar("email", { length: 320 }).notNull(),
   phone: varchar("phone", { length: 32 }).notNull(),
   dob: varchar("dob", { length: 32 }),
+  deliveryAddress: text("deliveryAddress"),
   consentData: json("consentData").$type<Record<string, boolean>>().default({}),
   medicalHistory: json("medicalHistory").$type<Array<{ condition: string; yes: boolean | null; details: string }>>().default([]),
   medications: json("medications").$type<Array<{ name: string; dose: string; frequency: string; reason: string }>>().default([]),
@@ -113,3 +114,15 @@ export const contactMessages = mysqlTable("contactMessages", {
 });
 
 export type ContactMessage = typeof contactMessages.$inferSelect;
+
+// ── Admin Credentials (local login) ──────────────────────────────────────────
+export const adminCredentials = mysqlTable("adminCredentials", {
+  id: int("id").autoincrement().primaryKey(),
+  username: varchar("username", { length: 64 }).notNull().unique(),
+  passwordHash: varchar("passwordHash", { length: 255 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type AdminCredential = typeof adminCredentials.$inferSelect;
+export type InsertAdminCredential = typeof adminCredentials.$inferInsert;

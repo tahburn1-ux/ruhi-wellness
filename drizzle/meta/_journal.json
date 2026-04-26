@@ -15,6 +15,20 @@
       "when": 1777236039963,
       "tag": "0001_nasty_archangel",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1777239203014,
+      "tag": "0002_omniscient_inhumans",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1777240066898,
+      "tag": "0003_shocking_roland_deschain",
+      "breakpoints": true
     }
   ]
 }

@@ -20,6 +20,7 @@ import AdminServices from "./pages/admin/Services";
 import AdminTestimonials from "./pages/admin/Testimonials";
 import AdminMessages from "./pages/admin/Messages";
 import AdminSettings from "./pages/admin/Settings";
+import AdminLogin from "./pages/admin/Login";
 
 function Router() {
   return (
@@ -29,9 +30,11 @@ function Router() {
       <Route path="/services" component={Services} />
       <Route path="/services/:slug" component={DripDetail} />
       <Route path="/book" component={Booking} />
+      <Route path="/booking" component={Booking} />
       <Route path="/contact" component={Contact} />
 
       {/* Admin routes */}
+      <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/bookings" component={AdminBookings} />
       <Route path="/admin/bookings/:id" component={AdminBookingDetail} />

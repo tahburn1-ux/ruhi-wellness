@@ -1,19 +1,20 @@
 import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { AdminSidebar } from "./Dashboard";
+import AdminGuard from "@/components/AdminGuard";
 import { Save, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 function SettingsSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="glass-card rounded-2xl p-6 mb-6">
-      <h2 className="font-serif text-lg font-semibold text-[oklch(0.22_0.07_220)] mb-5 pb-3 border-b border-[oklch(0.88_0.01_215)]">{title}</h2>
+      <h2 className="font-serif text-lg font-semibold text-[oklch(0.22_0.05_60)] mb-5 pb-3 border-b border-[oklch(0.87_0.025_78)]">{title}</h2>
       {children}
     </div>
   );
 }
 
-export default function AdminSettings() {
+function AdminSettingsInner() {
   const utils = trpc.useUtils();
   const { data: rawSettings = {} } = trpc.settings.get.useQuery();
   const updateSettings = trpc.settings.update.useMutation({ onSuccess: () => { utils.settings.get.invalidate(); toast.success("Settings saved!"); } });
@@ -51,8 +52,8 @@ export default function AdminSettings() {
       <main className="flex-1 p-8 overflow-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="font-serif text-3xl font-bold text-[oklch(0.18_0.06_220)]">Settings</h1>
-            <p className="text-[oklch(0.5_0.03_215)] mt-1">Manage site content, contact info, and images</p>
+            <h1 className="font-serif text-3xl font-bold text-[oklch(0.18_0.05_60)]">Settings</h1>
+            <p className="text-[oklch(0.50_0.03_65)] mt-1">Manage site content, contact info, and images</p>
           </div>
           <button onClick={handleSave} disabled={updateSettings.isPending} className="btn-primary flex items-center gap-2 text-sm">
             <Save className="w-4 h-4" /> {updateSettings.isPending ? "Saving..." : "Save All Changes"}
@@ -69,9 +70,9 @@ export default function AdminSettings() {
               { key: "brand.heroSubtitle", label: "Hero Subtitle" },
             ].map(({ key, label }) => (
               <div key={key}>
-                <label className="block text-xs font-medium text-[oklch(0.5_0.03_215)] mb-1">{label}</label>
+                <label className="block text-xs font-medium text-[oklch(0.50_0.03_65)] mb-1">{label}</label>
                 <input type="text" value={form[key] || ""} onChange={e => set(key, e.target.value)}
-                  className="w-full border border-[oklch(0.88_0.01_215)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.55_0.12_195)]"
+                  className="w-full border border-[oklch(0.87_0.025_78)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.52_0.10_75)]"
                 />
               </div>
             ))}
@@ -89,9 +90,9 @@ export default function AdminSettings() {
               { key: "contact.hours.saturday", label: "Saturday Hours" },
             ].map(({ key, label }) => (
               <div key={key}>
-                <label className="block text-xs font-medium text-[oklch(0.5_0.03_215)] mb-1">{label}</label>
+                <label className="block text-xs font-medium text-[oklch(0.50_0.03_65)] mb-1">{label}</label>
                 <input type="text" value={form[key] || ""} onChange={e => set(key, e.target.value)}
-                  className="w-full border border-[oklch(0.88_0.01_215)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.55_0.12_195)]"
+                  className="w-full border border-[oklch(0.87_0.025_78)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.52_0.10_75)]"
                 />
               </div>
             ))}
@@ -106,16 +107,16 @@ export default function AdminSettings() {
               { key: "about.subheading", label: "Subheading" },
             ].map(({ key, label }) => (
               <div key={key}>
-                <label className="block text-xs font-medium text-[oklch(0.5_0.03_215)] mb-1">{label}</label>
+                <label className="block text-xs font-medium text-[oklch(0.50_0.03_65)] mb-1">{label}</label>
                 <input type="text" value={form[key] || ""} onChange={e => set(key, e.target.value)}
-                  className="w-full border border-[oklch(0.88_0.01_215)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.55_0.12_195)]"
+                  className="w-full border border-[oklch(0.87_0.025_78)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.52_0.10_75)]"
                 />
               </div>
             ))}
             <div>
-              <label className="block text-xs font-medium text-[oklch(0.5_0.03_215)] mb-1">About Body Text</label>
+              <label className="block text-xs font-medium text-[oklch(0.50_0.03_65)] mb-1">About Body Text</label>
               <textarea value={form["about.body"] || ""} onChange={e => set("about.body", e.target.value)}
-                rows={5} className="w-full border border-[oklch(0.88_0.01_215)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.55_0.12_195)] resize-none" />
+                rows={5} className="w-full border border-[oklch(0.87_0.025_78)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.52_0.10_75)] resize-none" />
             </div>
           </div>
         </SettingsSection>
@@ -129,14 +130,14 @@ export default function AdminSettings() {
               { key: "image.logo", label: "Logo Image" },
             ].map(({ key, label }) => (
               <div key={key}>
-                <label className="block text-xs font-medium text-[oklch(0.5_0.03_215)] mb-2">{label}</label>
+                <label className="block text-xs font-medium text-[oklch(0.50_0.03_65)] mb-2">{label}</label>
                 {form[key] && (
-                  <img src={form[key]} alt={label} className="w-full h-32 object-cover rounded-xl mb-2 border border-[oklch(0.88_0.01_215)]" />
+                  <img src={form[key]} alt={label} className="w-full h-32 object-cover rounded-xl mb-2 border border-[oklch(0.87_0.025_78)]" />
                 )}
                 <div className="flex gap-2">
                   <input type="text" value={form[key] || ""} onChange={e => set(key, e.target.value)}
                     placeholder="Image URL or upload below"
-                    className="flex-1 border border-[oklch(0.88_0.01_215)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.55_0.12_195)]"
+                    className="flex-1 border border-[oklch(0.87_0.025_78)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.52_0.10_75)]"
                   />
                   <label className="btn-outline text-sm flex items-center gap-1 cursor-pointer">
                     <Upload className="w-4 h-4" />
@@ -158,9 +159,9 @@ export default function AdminSettings() {
               { key: "booking.slots", label: "Available Time Slots (comma-separated)" },
             ].map(({ key, label }) => (
               <div key={key}>
-                <label className="block text-xs font-medium text-[oklch(0.5_0.03_215)] mb-1">{label}</label>
+                <label className="block text-xs font-medium text-[oklch(0.50_0.03_65)] mb-1">{label}</label>
                 <input type="text" value={form[key] || ""} onChange={e => set(key, e.target.value)}
-                  className="w-full border border-[oklch(0.88_0.01_215)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.55_0.12_195)]"
+                  className="w-full border border-[oklch(0.87_0.025_78)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.52_0.10_75)]"
                 />
               </div>
             ))}
@@ -174,5 +175,13 @@ export default function AdminSettings() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function AdminSettings() {
+  return (
+    <AdminGuard>
+      <AdminSettingsInner />
+    </AdminGuard>
   );
 }
