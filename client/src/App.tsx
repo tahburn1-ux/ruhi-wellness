@@ -11,6 +11,10 @@ import Services from "./pages/Services";
 import DripDetail from "./pages/DripDetail";
 import Booking from "./pages/Booking";
 import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
+import About from "./pages/About";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import HealthDisclaimer from "./pages/HealthDisclaimer";
 import NotFound from "./pages/NotFound";
 
 // Admin pages
@@ -44,6 +48,10 @@ function Router() {
         <Route path="/book" component={Booking} />
         <Route path="/booking" component={Booking} />
         <Route path="/contact" component={Contact} />
+        <Route path="/faq" component={FAQ} />
+        <Route path="/about" component={About} />
+        <Route path="/privacy-policy" component={PrivacyPolicy} />
+        <Route path="/health-disclaimer" component={HealthDisclaimer} />
 
         {/* Admin routes */}
         <Route path="/admin/login" component={AdminLogin} />

@@ -49,8 +49,10 @@ export default function Footer() {
               {[
                 { label: "Book a Session", href: "/booking" },
                 { label: "Contact Us", href: "/contact" },
-                { label: "Privacy Policy", href: "#" },
-                { label: "Health Disclaimer", href: "#" },
+                { label: "Privacy Policy", href: "/privacy-policy" },
+                { label: "Health Disclaimer", href: "/health-disclaimer" },
+                { label: "FAQ", href: "/faq" },
+                { label: "About Us", href: "/about" },
               ].map((item) => (
                 <li key={item.label}>
                   <Link href={item.href} className="text-sm text-[oklch(0.65_0.03_65)] hover:text-white transition-colors">
