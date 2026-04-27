@@ -143,7 +143,7 @@ export default function PrivacyPolicy() {
               <div className="mt-3 space-y-1">
                 <p><strong className="text-brown">Ruhi Wellness</strong></p>
                 <p>Email: <a href="mailto:hello@ruhiwellness.com" className="text-gold hover:underline">hello@ruhiwellness.com</a></p>
-                <p>Phone: <a href="tel:+447700900000" className="text-gold hover:underline">+44 (0) 7700 900000</a></p>
+                <p>Phone: <a href="tel:+447360060980" className="text-gold hover:underline">+44 7360 060980</a></p>
               </div>
               <p className="mt-3">
                 You also have the right to lodge a complaint with the UK Information Commissioner's Office (ICO) at <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">ico.org.uk</a> if you believe your data rights have been violated.

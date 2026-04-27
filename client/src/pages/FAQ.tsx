@@ -34,7 +34,7 @@ const faqs = [
       },
       {
         q: "What areas do you cover?",
-        a: "We currently serve London and surrounding areas. If you are unsure whether we cover your location, please contact us at hello@ruhiwellness.com or call +44 (0) 7700 900000 and we will do our best to accommodate you.",
+        a: "We currently serve London and surrounding areas. If you are unsure whether we cover your location, please contact us at hello@ruhiwellness.com or call +44 7360 060980 and we will do our best to accommodate you.",
       },
       {
         q: "How long does a session take?",

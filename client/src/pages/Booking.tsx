@@ -543,7 +543,7 @@ export default function Booking() {
                     {[
                       { key: "fullName", label: "Full Name *", type: "text", placeholder: "Jane Doe" },
                       { key: "email", label: "Email Address *", type: "email", placeholder: "jane@example.com" },
-                      { key: "phone", label: "Phone Number *", type: "tel", placeholder: "+44 7700 900000" },
+                      { key: "phone", label: "Phone Number *", type: "tel", placeholder: "+44 7360 060980" },
                       { key: "dob", label: "Date of Birth", type: "date", placeholder: "" },
                     ].map(({ key, label, type, placeholder }) => (
                       <div key={key}>

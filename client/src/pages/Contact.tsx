@@ -99,9 +99,9 @@ export default function Contact() {
                 </div>
                 <div>
                   <div className="font-semibold text-brown mb-1">Direct Line</div>
-                  <a href={`tel:${s["contact.phone"] || "+447700900000"}`}
+                  <a href={`tel:${s["contact.phone"] || "+447360060980"}`}
                     className="text-gold font-semibold hover:underline">
-                    {s["contact.phone"] || "+44 (0) 7700 900000"}
+                    {s["contact.phone"] || "+44 7360 060980"}
                   </a>
                 </div>
               </div>

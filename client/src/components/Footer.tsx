@@ -69,7 +69,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm text-[oklch(0.65_0.03_65)]">
                 <Phone className="w-4 h-4 text-[oklch(0.62_0.08_75)]" />
-                +44 (0) 7700 900000
+                +44 7360 060980
               </li>
               <li className="flex items-center gap-2 text-sm text-[oklch(0.65_0.03_65)]">
                 <Mail className="w-4 h-4 text-[oklch(0.62_0.08_75)]" />
