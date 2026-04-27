@@ -379,9 +379,9 @@ function VideoHero({ heroTitle, heroSubtitle, renderHeroTitle }: {
               </div>
             </div>
 
-            {/* Right: IV drip bag — large, centred in hero right column */}
-            <div className="hidden lg:flex justify-center items-center self-stretch">
-              <div className="relative w-[340px] xl:w-[420px] h-[600px] xl:h-[700px] float-anim">
+            {/* Right: IV drip bag — aligned with hero text, shifted left and up */}
+            <div className="hidden lg:flex justify-start items-start self-stretch pl-4 pt-4">
+              <div className="relative w-[320px] xl:w-[400px] h-[580px] xl:h-[660px] float-anim -mt-8">
                 <div className="absolute inset-0 rounded-full opacity-40 blur-3xl"
                   style={{ background: "radial-gradient(circle, oklch(0.68 0.10 78), transparent 70%)" }} />
                 <IVDripBag scrollProgress={0} />
@@ -551,7 +551,7 @@ export default function Home() {
   const heroSubtitle = (settings as any)["hero.subtitle"] ||
     "Nutrient-rich IV therapy delivered in the comfort of your home, hotel, or office. Because life doesn't slow down, and neither should you.";
 
-  const featured = services.slice(0, 6);
+  const featured = services.slice(0, 4);
 
   // Parse hero title: "Body," and "Soul" get gold italic treatment
   const renderHeroTitle = (raw: string) => {
@@ -618,7 +618,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featured.map((service, i) => (
               <div key={service.id} className="reveal" style={{ transitionDelay: `${i * 80}ms` }}>
                 <FlipCard service={service} />
