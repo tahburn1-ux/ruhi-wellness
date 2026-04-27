@@ -378,7 +378,17 @@ export default function Booking() {
 
   const canProceedStep1 = selectedService && selectedDate && selectedTime;
   const canProceedStep2 = personalData.fullName && personalData.email && personalData.phone && personalData.deliveryAddress;
-  const canProceedStep3 = consentData.consent1 && consentData.consent2 && consentData.consent3 && consentData.consent4 && consentData.consent5 && consentData.signatureName;
+  // All 5 consent checkboxes + signature
+  const consentChecked = consentData.consent1 && consentData.consent2 && consentData.consent3 && consentData.consent4 && consentData.consent5 && consentData.signatureName?.trim();
+  // All medical history conditions must have Yes or No answered
+  const medHistory3 = consentData.medicalHistory || CONDITIONS.map(c => ({ condition: c, yes: null, details: "" }));
+  const allMedAnswered = medHistory3.every((m: any) => m.yes !== null && m.yes !== undefined);
+  // All wellbeing symptoms must have Yes or No answered
+  const wellbeing3 = consentData.wellbeing || WELLBEING.map(s => ({ symptom: s, yes: null, notes: "" }));
+  const allWellbeingAnswered = wellbeing3.every((w: any) => w.yes !== null && w.yes !== undefined);
+  // All IVNT history questions must be answered
+  const allIVNTAnswered = consentData.previousIVNT && consentData.adverseReaction && consentData.allergies;
+  const canProceedStep3 = consentChecked && allMedAnswered && allWellbeingAnswered && allIVNTAnswered;
 
   const handleSubmit = async () => {
     if (!selectedService || !selectedDate || !selectedTime) return;
@@ -580,9 +590,31 @@ export default function Booking() {
               {step === 3 && (
                 <div>
                   <h2 className="font-serif text-2xl font-bold text-[oklch(0.18_0.05_60)] mb-1">Consent & Medical History</h2>
-                  <p className="text-sm text-[oklch(0.50_0.03_65)] mb-6">
+                  <p className="text-sm text-[oklch(0.50_0.03_65)] mb-4">
                     For your safety, please complete this form honestly and thoroughly. All information is confidential.
                   </p>
+                  {/* Completion checklist */}
+                  <div className="mb-6 glass-card rounded-2xl p-4 border border-[oklch(0.87_0.025_78)]">
+                    <p className="text-xs font-bold uppercase tracking-widest text-[oklch(0.45_0.06_65)] mb-3">Required to proceed</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                      {[
+                        { label: "All 5 consent declarations", done: !!(consentData.consent1 && consentData.consent2 && consentData.consent3 && consentData.consent4 && consentData.consent5) },
+                        { label: "All medical history questions", done: allMedAnswered },
+                        { label: "IVNT history (3 questions)", done: !!(consentData.previousIVNT && consentData.adverseReaction && consentData.allergies) },
+                        { label: "Wellbeing symptoms (9 questions)", done: allWellbeingAnswered },
+                        { label: "Signature (typed full name)", done: !!(consentData.signatureName?.trim()) },
+                      ].map(({ label, done }) => (
+                        <div key={label} className="flex items-center gap-2">
+                          <div className={`w-4 h-4 rounded-full flex items-center justify-center flex-shrink-0 ${
+                            done ? "bg-[oklch(0.52_0.10_75)]" : "border-2 border-[oklch(0.75_0.03_65)]"
+                          }`}>
+                            {done && <Check className="w-2.5 h-2.5 text-white" />}
+                          </div>
+                          <span className={done ? "text-[oklch(0.35_0.04_65)] line-through opacity-60" : "text-[oklch(0.35_0.04_65)]"}>{label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                   <ConsentForm data={consentData} onChange={setConsentData} />
                 </div>
               )}
