@@ -5,17 +5,18 @@ WORKDIR /app
 # Install pnpm globally
 RUN npm install -g pnpm@10.4.1
 
-# Copy package files
+# Copy package files AND patches directory (required for pnpm patched dependencies)
 COPY package.json pnpm-lock.yaml ./
+COPY patches/ ./patches/
 
 # Install dependencies
-RUN npx pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the application
 COPY . .
 
 # Build the application
-RUN npx pnpm build
+RUN pnpm build
 
 # Expose port (Railway will set PORT env var)
 EXPOSE 3000
