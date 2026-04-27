@@ -55,7 +55,7 @@ export default function AdminLogin() {
           {/* Logo */}
           <div className="text-center mb-8">
             <img
-              src="/manus-storage/ruhi-logo-clean_b23934de.png"
+              src="/ruhi-logo.png"
               alt="Ruhi Wellness"
               className="h-20 w-auto object-contain mx-auto mb-3" />
             <p className="text-sm" style={{ color: "oklch(0.55 0.04 65)" }}>

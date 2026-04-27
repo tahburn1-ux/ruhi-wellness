@@ -72,7 +72,7 @@ export default function Navbar() {
         <Link href="/">
           <div className="flex items-center gap-2 cursor-pointer group">
             <img
-              src="/manus-storage/ruhi-logo-clean_b23934de.png"
+              src="/ruhi-logo.png"
               alt="Ruhi Wellness"
               className="h-14 w-auto object-contain"
             />

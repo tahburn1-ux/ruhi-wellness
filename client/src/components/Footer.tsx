@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
               <img
-                src="/manus-storage/ruhi-logo-clean_b23934de.png"
+                src="/ruhi-logo.png"
                 alt="Ruhi Wellness"
                 className="h-14 w-auto object-contain" />
             </div>

@@ -19,7 +19,7 @@ function AdminSidebar({ active }: { active: string }) {
         <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-2">
           <img
-            src="/manus-storage/ruhi-logo-clean_b23934de.png"
+            src="/ruhi-logo.png"
             alt="Ruhi Wellness"
             className="h-10 w-auto object-contain" />
           <div className="text-xs text-white/50 ml-1">Admin Panel</div>
