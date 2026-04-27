@@ -377,7 +377,8 @@ export default function Booking() {
   }, [preselectedSlug, services]);
 
   const canProceedStep1 = selectedService && selectedDate && selectedTime;
-  const canProceedStep2 = personalData.fullName && personalData.email && personalData.phone && personalData.deliveryAddress;
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const canProceedStep2 = personalData.fullName && personalData.email && isValidEmail(personalData.email) && personalData.phone && personalData.deliveryAddress;
   // All 5 consent checkboxes + signature
   const consentChecked = consentData.consent1 && consentData.consent2 && consentData.consent3 && consentData.consent4 && consentData.consent5 && consentData.signatureName?.trim();
   // All medical history conditions must have Yes or No answered
@@ -568,8 +569,15 @@ export default function Booking() {
                         <input type={type} placeholder={placeholder}
                           value={(personalData as any)[key]}
                           onChange={e => setPersonalData({ ...personalData, [key]: e.target.value })}
-                          className="w-full border border-[oklch(0.87_0.025_78)] rounded-xl px-4 py-3 focus:outline-none focus:border-[oklch(0.52_0.10_75)] bg-white text-[oklch(0.25_0.04_220)]"
+                          className={`w-full border rounded-xl px-4 py-3 focus:outline-none bg-white text-[oklch(0.25_0.04_220)] ${
+                            key === 'email' && personalData.email && !isValidEmail(personalData.email)
+                              ? 'border-red-400 focus:border-red-500'
+                              : 'border-[oklch(0.87_0.025_78)] focus:border-[oklch(0.52_0.10_75)]'
+                          }`}
                         />
+                        {key === 'email' && personalData.email && !isValidEmail(personalData.email) && (
+                          <p className="text-xs text-red-500 mt-1">Please enter a valid email address (e.g. jane@example.com)</p>
+                        )}
                       </div>
                     ))}
                     <div>

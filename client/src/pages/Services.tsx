@@ -32,13 +32,21 @@ export default function Services() {
   const [activeCategory, setActiveCategory] = useState("All");
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("visible"); }),
-      { threshold: 0.1 }
-    );
-    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [services]);
+    // Small delay to allow DOM to update after category change
+    const timer = setTimeout(() => {
+      const observer = new IntersectionObserver(
+        (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("visible"); }),
+        { threshold: 0.1 }
+      );
+      // Reset visibility and re-observe all reveal elements
+      document.querySelectorAll(".reveal").forEach((el) => {
+        el.classList.remove("visible");
+        observer.observe(el);
+      });
+      return () => observer.disconnect();
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [services, activeCategory]);
 
   const filtered = activeCategory === "All"
     ? services

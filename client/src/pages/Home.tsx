@@ -357,8 +357,8 @@ function VideoHero({ heroTitle, heroSubtitle, renderHeroTitle }: {
                 </Link>
               </div>
 
-              {/* 4 feature icons — liquid glass cards */}
-              <div className="flex items-start gap-0">
+              {/* 4 feature icons — 2x2 grid on mobile, single row on desktop */}
+              <div className="grid grid-cols-2 sm:flex sm:items-start sm:gap-0 gap-x-4 gap-y-5">
                 {[
                   { icon: Zap, label: "Boost Energy", sub: "Fight fatigue &\nfeel revitalised" },
                   { icon: Shield, label: "Support Immunity", sub: "Strengthen your\nbody's defenses" },
@@ -367,9 +367,9 @@ function VideoHero({ heroTitle, heroSubtitle, renderHeroTitle }: {
                 ].map(({ icon: Icon, label, sub }, idx) => (
                   <div key={label} className="flex items-start">
                     {idx > 0 && (
-                      <div className="w-px self-stretch bg-[oklch(0.82_0.03_78)] mx-5 mt-1" />
+                      <div className="hidden sm:block w-px self-stretch bg-[oklch(0.82_0.03_78)] mx-5 mt-1" />
                     )}
-                    <div className="text-left min-w-[100px]">
+                    <div className="text-left">
                       <Icon className="w-7 h-7 mb-2 text-gold" strokeWidth={1.3} />
                       <div className="text-sm font-semibold text-brown leading-tight">{label}</div>
                       <div className="text-[11px] text-rw-muted leading-snug mt-0.5 whitespace-pre-line">{sub}</div>

@@ -17,7 +17,10 @@ function SettingsSection({ title, children }: { title: string; children: React.R
 function AdminSettingsInner() {
   const utils = trpc.useUtils();
   const { data: rawSettings = {} } = trpc.settings.get.useQuery();
-  const updateSettings = trpc.settings.update.useMutation({ onSuccess: () => { utils.settings.get.invalidate(); toast.success("Settings saved!"); } });
+  const updateSettings = trpc.settings.update.useMutation({
+    onSuccess: () => { utils.settings.get.invalidate(); toast.success("Settings saved!"); },
+    onError: (e) => toast.error("Failed to save settings: " + e.message),
+  });
   const uploadMedia = trpc.media.upload.useMutation();
 
   const settings = rawSettings as Record<string, string>;

@@ -43,7 +43,7 @@ function ServiceForm({ initial, onSave, onCancel }: { initial?: any; onSave: (da
               <div key={key}>
                 <label className="block text-xs font-medium text-[oklch(0.50_0.03_65)] mb-1">{label}</label>
                 <input type={type} value={(form as any)[key]}
-                  onChange={e => setForm({ ...form, [key]: type === "number" ? parseFloat(e.target.value) || 0 : e.target.value })}
+                  onChange={e => setForm({ ...form, [key]: key === "sortOrder" ? (parseInt(e.target.value) || 0) : e.target.value })}
                   className="w-full border border-[oklch(0.87_0.025_78)] rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[oklch(0.52_0.10_75)]"
                 />
               </div>
@@ -97,9 +97,18 @@ function ServiceForm({ initial, onSave, onCancel }: { initial?: any; onSave: (da
 function AdminServicesInner() {
   const utils = trpc.useUtils();
   const { data: services = [], isLoading } = trpc.services.listAll.useQuery();
-  const createService = trpc.services.create.useMutation({ onSuccess: () => { utils.services.listAll.invalidate(); setShowForm(false); toast.success("Service created"); } });
-  const updateService = trpc.services.update.useMutation({ onSuccess: () => { utils.services.listAll.invalidate(); setEditing(null); toast.success("Service updated"); } });
-  const deleteService = trpc.services.delete.useMutation({ onSuccess: () => { utils.services.listAll.invalidate(); toast.success("Service deleted"); } });
+  const createService = trpc.services.create.useMutation({
+    onSuccess: () => { utils.services.listAll.invalidate(); setShowForm(false); toast.success("Service created"); },
+    onError: (e) => toast.error("Failed to create: " + e.message),
+  });
+  const updateService = trpc.services.update.useMutation({
+    onSuccess: () => { utils.services.listAll.invalidate(); setEditing(null); toast.success("Service updated!"); },
+    onError: (e) => toast.error("Failed to save: " + e.message),
+  });
+  const deleteService = trpc.services.delete.useMutation({
+    onSuccess: () => { utils.services.listAll.invalidate(); toast.success("Service deleted"); },
+    onError: (e) => toast.error("Failed to delete: " + e.message),
+  });
 
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<any>(null);
