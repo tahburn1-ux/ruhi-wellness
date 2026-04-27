@@ -9,13 +9,13 @@ RUN npm install -g pnpm@10.4.1
 COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN npx pnpm install --frozen-lockfile
 
 # Copy the rest of the application
 COPY . .
 
 # Build the application
-RUN pnpm build
+RUN npx pnpm build
 
 # Expose port (Railway will set PORT env var)
 EXPOSE 3000
