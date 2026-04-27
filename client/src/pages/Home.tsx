@@ -379,10 +379,10 @@ function VideoHero({ heroTitle, heroSubtitle, renderHeroTitle }: {
               </div>
             </div>
 
-            {/* Right: IV drip bag — float animation preserved */}
-            <div className="hidden lg:flex justify-end items-center self-stretch">
-              <div className="relative w-[200px] xl:w-[240px] h-[560px] xl:h-[640px] float-anim mr-[-2rem] xl:mr-[-3rem]">
-                <div className="absolute inset-0 rounded-full opacity-30 blur-3xl"
+            {/* Right: IV drip bag — large, centred in hero right column */}
+            <div className="hidden lg:flex justify-center items-center self-stretch">
+              <div className="relative w-[340px] xl:w-[420px] h-[600px] xl:h-[700px] float-anim">
+                <div className="absolute inset-0 rounded-full opacity-40 blur-3xl"
                   style={{ background: "radial-gradient(circle, oklch(0.68 0.10 78), transparent 70%)" }} />
                 <IVDripBag scrollProgress={0} />
               </div>
