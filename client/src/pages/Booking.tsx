@@ -383,6 +383,13 @@ export default function Booking() {
   const handleSubmit = async () => {
     if (!selectedService || !selectedDate || !selectedTime) return;
     try {
+      // Ensure wellbeing and medicalHistory are fully populated with defaults
+      const wellbeingData = (consentData.wellbeing || WELLBEING.map(s => ({ symptom: s, yes: null, notes: "" })))
+        .map((w: any) => ({ symptom: w.symptom || "", yes: w.yes ?? null, notes: w.notes || "" }));
+      const medHistoryData = (consentData.medicalHistory || CONDITIONS.map(c => ({ condition: c, yes: null, details: "" })))
+        .map((m: any) => ({ condition: m.condition || "", yes: m.yes ?? null, details: m.details || "" }));
+      const medicationsData = (consentData.medications || [])
+        .map((med: any) => ({ name: med.name || "", dose: med.dose || "", frequency: med.frequency || "", reason: med.reason || "" }));
       const result = await createBooking.mutateAsync({
         serviceId: selectedService.id,
         serviceName: selectedService.name,
@@ -391,19 +398,19 @@ export default function Booking() {
         bookingTime: selectedTime,
         ...personalData,
         consentData: {
-          consent1: consentData.consent1, consent2: consentData.consent2,
-          consent3: consentData.consent3, consent4: consentData.consent4, consent5: consentData.consent5,
+          consent1: consentData.consent1 ?? false, consent2: consentData.consent2 ?? false,
+          consent3: consentData.consent3 ?? false, consent4: consentData.consent4 ?? false, consent5: consentData.consent5 ?? false,
         },
-        medicalHistory: consentData.medicalHistory,
-        medications: consentData.medications,
+        medicalHistory: medHistoryData,
+        medications: medicationsData,
         ivntHistory: {
-          previousIVNT: consentData.previousIVNT, adverseReaction: consentData.adverseReaction,
-          allergies: consentData.allergies,
-          previousIVNTDetails: consentData.previousIVNTDetails,
-          adverseReactionDetails: consentData.adverseReactionDetails,
-          allergiesDetails: consentData.allergiesDetails,
+          previousIVNT: consentData.previousIVNT || null, adverseReaction: consentData.adverseReaction || null,
+          allergies: consentData.allergies || null,
+          previousIVNTDetails: consentData.previousIVNTDetails || "",
+          adverseReactionDetails: consentData.adverseReactionDetails || "",
+          allergiesDetails: consentData.allergiesDetails || "",
         },
-        wellbeing: consentData.wellbeing,
+        wellbeing: wellbeingData,
       });
       setBookingRef((result as any)?.reference || "RW-" + Date.now());
       setSubmitted(true);
@@ -609,14 +616,14 @@ export default function Booking() {
               {/* Navigation */}
               <div className="flex justify-between mt-8">
                 {step > 1 ? (
-                  <button onClick={() => setStep(s => s - 1)} className="btn-outline flex items-center gap-2 text-sm">
+                  <button onClick={() => { setStep(s => s - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="btn-outline flex items-center gap-2 text-sm">
                     <ChevronLeft className="w-4 h-4" /> Back
                   </button>
                 ) : <div />}
 
                 {step < 4 ? (
                   <button
-                    onClick={() => setStep(s => s + 1)}
+                    onClick={() => { setStep(s => s + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                     disabled={
                       (step === 1 && !canProceedStep1) ||
                       (step === 2 && !canProceedStep2) ||

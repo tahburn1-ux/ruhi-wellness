@@ -12,7 +12,7 @@ export default function AdminLogin() {
 
   const loginMutation = trpc.adminAuth.login.useMutation({
     onSuccess: () => {
-      setLocation("/admin");
+      window.location.href = "/admin";
     },
     onError: (err) => {
       setError(err.message || "Invalid credentials. Please try again.");
