@@ -178,7 +178,7 @@ function ConsentForm({ data, onChange }: { data: any; onChange: (d: any) => void
             <div
               onClick={() => set(key, !data[key])}
               className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
-                data[key] ? "bg-[oklch(0.52_0.10_75)] border-[oklch(0.52_0.10_75)]" : "border-[oklch(0.7_0.03_215)] group-hover:border-[oklch(0.52_0.10_75)]"
+                data[key] ? "bg-[oklch(0.32_0.05_60)] border-[oklch(0.32_0.05_60)]" : "border-[oklch(0.7_0.03_215)] group-hover:border-[oklch(0.32_0.05_60)]"
               }`}
             >
               {data[key] && <Check className="w-3 h-3 text-white" />}
@@ -206,8 +206,8 @@ function ConsentForm({ data, onChange }: { data: any; onChange: (d: any) => void
                       onClick={() => setMedHistory(i, "yes", val)}
                       className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
                         item.yes === val
-                          ? val ? "bg-red-100 text-red-700 border border-red-300" : "bg-green-100 text-green-700 border border-green-300"
-                          : "bg-[oklch(0.92_0.03_78)] text-[oklch(0.50_0.03_65)] border border-transparent hover:border-[oklch(0.82_0.06_75)]"
+                          ? "bg-[oklch(0.32_0.05_60)] text-white border border-[oklch(0.32_0.05_60)]"
+                          : "bg-[oklch(0.92_0.03_78)] text-[oklch(0.50_0.03_65)] border border-transparent hover:border-[oklch(0.32_0.05_60)]"
                       }`}
                     >
                       {label}
@@ -253,7 +253,7 @@ function ConsentForm({ data, onChange }: { data: any; onChange: (d: any) => void
             </button>
           </div>
         ))}
-        <button onClick={addMedication} className="text-sm text-[oklch(0.52_0.10_75)] font-semibold hover:underline">
+        <button onClick={addMedication} className="text-sm text-[oklch(0.32_0.05_60)] font-semibold hover:underline">
           + Add Medication
         </button>
       </div>
@@ -274,7 +274,7 @@ function ConsentForm({ data, onChange }: { data: any; onChange: (d: any) => void
               {[{ val: "yes", label: "Yes" }, { val: "no", label: "No" }].map(({ val, label: l }) => (
                 <button key={val} onClick={() => set(key, val)}
                   className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
-                    data[key] === val ? "bg-[oklch(0.52_0.10_75)] text-white" : "bg-[oklch(0.92_0.03_78)] text-[oklch(0.50_0.03_65)] hover:bg-[oklch(0.88_0.03_200)]"
+                    data[key] === val ? "bg-[oklch(0.32_0.05_60)] text-white" : "bg-[oklch(0.92_0.03_78)] text-[oklch(0.50_0.03_65)] hover:bg-[oklch(0.32_0.05_60)]"
                   }`}>
                   {l}
                 </button>
@@ -306,8 +306,8 @@ function ConsentForm({ data, onChange }: { data: any; onChange: (d: any) => void
                   <button key={label} onClick={() => setWellbeing(i, "yes", val)}
                     className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
                       item.yes === val
-                        ? "bg-[oklch(0.52_0.10_75)] text-white"
-                        : "bg-[oklch(0.92_0.03_78)] text-[oklch(0.50_0.03_65)] hover:bg-[oklch(0.88_0.03_200)]"
+                        ? "bg-[oklch(0.32_0.05_60)] text-white"
+                        : "bg-[oklch(0.92_0.03_78)] text-[oklch(0.50_0.03_65)] hover:bg-[oklch(0.32_0.05_60)]"
                     }`}>
                     {label}
                   </button>
