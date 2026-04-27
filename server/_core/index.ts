@@ -49,26 +49,34 @@ async function seedAdminIfNeeded() {
         updatedAt TIMESTAMP NOT NULL DEFAULT NOW() ON UPDATE NOW()
       )
     `);
-    const [rows] = await conn.execute("SELECT id FROM adminCredentials LIMIT 1");
+    const crypto = await import("crypto");
+    const salt = crypto.randomBytes(16).toString("hex");
+    const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
+    const adminUser = process.env.ADMIN_USERNAME || "mustyadmin";
+    const hash = await new Promise<string>((resolve, reject) => {
+      crypto.pbkdf2(adminPassword, salt, 100000, 64, "sha512", (err, key) => {
+        if (err) reject(err);
+        else resolve(key.toString("hex"));
+      });
+    });
+    const [rows] = await conn.execute("SELECT id FROM adminCredentials WHERE username = ? LIMIT 1", [adminUser]);
     const arr = rows as Array<{ id: number }>;
     if (arr.length === 0) {
-      const crypto = await import("crypto");
-      const salt = crypto.randomBytes(16).toString("hex");
-      const hash = await new Promise<string>((resolve, reject) => {
-        crypto.pbkdf2("Tahmid1234!", salt, 100000, 64, "sha512", (err, key) => {
-          if (err) reject(err);
-          else resolve(key.toString("hex"));
-        });
-      });
       await conn.execute(
         "INSERT INTO adminCredentials (username, passwordHash) VALUES (?, ?)",
-        ["mustyadmin", `${salt}:${hash}`]
+        [adminUser, `${salt}:${hash}`]
       );
-      console.log("[DB] Admin credentials seeded: mustyadmin / Tahmid1234!");
+      console.log(`[DB] Admin credentials seeded: ${adminUser}`);
+    } else {
+      await conn.execute(
+        "UPDATE adminCredentials SET passwordHash = ? WHERE username = ?",
+        [`${salt}:${hash}`, adminUser]
+      );
+      console.log(`[DB] Admin credentials updated: ${adminUser}`);
     }
     await conn.end();
   } catch (err) {
-    console.error("[DB] Admin seed error:", err);
+    console.error("[DB] Admin seed error:", (err as Error).message);
   }
 }
 
